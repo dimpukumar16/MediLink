@@ -77,26 +77,3 @@ erDiagram
 
 ---
 
-## 📝 Highly Tailored Resume Bullet Points
-
-*Add these high-impact lines to your resume to showcase full-stack proficiency, database expertise, and attention to detail:*
-
-### **Summary of Project (Short Description)**
-> "Designed and developed **MediLink**, a high-performance, full-stack unified patient health record platform connecting hospitals, clinicians, and patients under a secure, hierarchical Single-Page Application (SPA) architecture. Built with Spring Boot, PostgreSQL (Supabase), and styled with a customized glassmorphic design system."
-
-### **Core Accomplishment Bullet Points**
-
-*   **Architected a secure, multi-tier organizational permission hierarchy** (System Admin -> Hospitals -> Doctors -> Patients) in Spring Boot to restrict manual signups, ensuring account creation is managed strictly by accredited clinics.
-*   **Engineered an automated Unique Health Identifier (UHID) generator** that creates permanent cryptographic IDs (`ML-XXXXXXXX`) for walk-in patients, allowing real-time profile lookup and unified treatment synchronization across multiple clinic branches.
-*   **Integrated a live PostgreSQL database hosted on Supabase Cloud** utilizing HikariCP connection pooling and Spring Data JPA to achieve high-performance query execution and reliable entity relational mapping (`@OneToOne`, `@ManyToOne`).
-*   **Implemented dynamic relational lookup on REST endpoints**, allowing medical records to automatically resolve the treating doctor's associated hospital branch name directly from database joins, eliminating manual record-keeping errors.
-*   **Designed a jaw-dropping, high-end user experience (UI/UX)** using CSS3 Variables, responsive 3D card translations, custom keyframe mesh backgrounds, and rotating inline SVG vector icons.
-*   **Built a custom ES6 Javascript Single-Page Application router and Toast Notification system** from scratch, replacing native browser alerts with glassmorphic sliding toasts and maintaining state securely using `localStorage`.
-
----
-
-## 💡 Technologies to List Under Your Skills Section
-*   **Languages**: Java (JDK 17), JavaScript (ES6+), SQL, HTML5, CSS3.
-*   **Backend Frameworks**: Spring Boot, Spring Web (REST APIs), Spring Data JPA, Hibernate.
-*   **Cloud & Database**: PostgreSQL, Supabase, H2 (Testing).
-*   **Tools & Architecture**: Maven, Tomcat, Git, RESTful API Design, MVC Architecture, HikariCP, Mermaid.
