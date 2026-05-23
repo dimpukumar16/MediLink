@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediLink | Unified Health Records</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css?v=3.0">
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <svg class="logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0070f3" />
+                            <stop offset="100%" stop-color="#00c6ff" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="12" cy="12" r="10" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" stroke-dasharray="3 2" />
+                    <path d="M12 7V17M7 12H17" stroke="url(#logo-grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>MediLink</span>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <!-- Dynamically populated based on auth state -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app">
+        <!-- Landing Page View -->
+        <section id="view-landing" class="view active">
+            <div class="hero">
+                <div class="hero-content fade-in-up">
+                    <div class="badge">Next Generation Healthcare</div>
+                    <h1>One Patient.<br><span class="gradient-text">One Unified Record.</span></h1>
+                    <p>Bridging healthcare fragmentation. MediLink securely connects patients, doctors, and hospitals.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="app.showLogin()">Login to Portal</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in-up" style="animation-delay: 0.1s;">
+                    <h3>For Patients</h3>
+                    <p>No more carrying reports. Full ownership of your lifelong health history.</p>
+                </div>
+                <div class="feature-card fade-in-up" style="animation-delay: 0.2s;">
+                    <h3>For Doctors</h3>
+                    <p>Complete medical history at your fingertips. Faster, accurate diagnosis.</p>
+                </div>
+                <div class="feature-card fade-in-up" style="animation-delay: 0.3s;">
+                    <h3>For Hospitals</h3>
+                    <p>Professional infrastructure, better patient retention, and compliance.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login View -->
+        <section id="view-login" class="view hidden glass-container form-container">
+            <h2 class="gradient-text">Welcome Back</h2>
+            <p>Login to access your MediLink dashboard.</p>
+            <form id="login-form" onsubmit="app.handleLogin(event)">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="error-msg" id="login-error"></div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <div class="auth-links">
+                <span style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Account creation is strictly managed by your respective healthcare provider.</span>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section id="view-dashboard-admin" class="view hidden dashboard-container">
+            <div class="dashboard-header">
+                <h2>System Admin Dashboard</h2>
+            </div>
+            <div class="grid-2">
+                <div class="glass-container">
+                    <h3>Add New Hospital</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Register a new hospital organization to the network.</p>
+                    <form onsubmit="app.adminAddHospital(event)">
+                        <div class="input-group">
+                            <label>Hospital Login Username</label>
+                            <input type="text" id="admin-hosp-username" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="admin-hosp-password" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Hospital Name</label>
+                            <input type="text" id="admin-hosp-name" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Address</label>
+                            <input type="text" id="admin-hosp-address" required>
+                        </div>
+                        <div class="error-msg" id="admin-hosp-error"></div>
+                        <button type="submit" class="btn btn-primary w-100">Register Hospital</button>
+                    </form>
+                </div>
+                
+                <div class="glass-container">
+                    <h3>Registered Hospitals</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Organizations active on the MediLink network.</p>
+                    <div class="timeline" id="admin-hospitals-list" style="margin-top: 1rem;">
+                        <!-- populated by js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboards -->
+        <section id="view-dashboard-patient" class="view hidden dashboard-container">
+            <div class="dashboard-header">
+                <h2>Welcome, <span class="gradient-text user-name">Patient</span></h2>
+                <div class="uhid-badge">UHID: <span id="patient-uhid"></span></div>
+            </div>
+            <div class="glass-container">
+                <h3>Your Medical History</h3>
+                <div class="timeline" id="patient-timeline">
+                    <!-- populated by js -->
+                </div>
+            </div>
+        </section>
+
+        <section id="view-dashboard-doctor" class="view hidden dashboard-container">
+            <div class="dashboard-header">
+                <h2>Dr. <span class="gradient-text user-name">Doctor</span> Dashboard</h2>
+            </div>
+            
+            <div class="grid-2">
+                <div>
+                    <!-- Search Patient Box -->
+                    <div class="glass-container">
+                        <h3>Search Patient</h3>
+                        <div class="search-box mt-1">
+                            <input type="text" id="search-uhid" placeholder="Enter Patient UHID (e.g. ML-A1B2C3D4)">
+                            <button class="btn btn-primary" onclick="app.searchPatient()">Search</button>
+                        </div>
+                        <div class="error-msg mt-1" id="search-error"></div>
+                        
+                        <div id="patient-details" class="hidden mt-2">
+                            <h4>Patient Profile</h4>
+                            <p><strong>Name:</strong> <span id="sp-name"></span></p>
+                            <p><strong>Age:</strong> <span id="sp-age"></span></p>
+                            <p><strong>Blood Group:</strong> <span id="sp-blood"></span></p>
+                            <hr style="border: 0; border-top: 1px solid var(--surface-border); margin: 1.5rem 0;">
+                            <h4>Add New Medical Record</h4>
+                            <form onsubmit="app.addRecord(event)">
+                                <div class="input-group">
+                                    <label>Diagnosis</label>
+                                    <textarea id="record-diagnosis" rows="3" required></textarea>
+                                </div>
+                                <div class="input-group">
+                                    <label>Prescription</label>
+                                    <textarea id="record-prescription" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Save Record</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Register Walk-In Patient Box -->
+                    <div class="glass-container" style="margin-top: 2rem;">
+                        <h3>Register Walk-In Patient</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Generate a permanent unique MediLink UHID for a walk-in patient.</p>
+                        <form onsubmit="app.doctorAddPatient(event)">
+                            <div class="input-group">
+                                <label>Patient Login Username</label>
+                                <input type="text" id="doc-pat-username" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Password</label>
+                                <input type="password" id="doc-pat-password" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Patient Full Name</label>
+                                <input type="text" id="doc-pat-name" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Age</label>
+                                <input type="number" id="doc-pat-age" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Blood Group</label>
+                                <input type="text" id="doc-pat-blood" placeholder="e.g. O+, A-" required>
+                            </div>
+                            <div class="error-msg" id="doc-pat-error"></div>
+                            <button type="submit" class="btn btn-primary w-100">Create Patient Account</button>
+                        </form>
+                        
+                        <div id="doc-pat-success" class="hidden mt-1" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); border-radius: 0.5rem; padding: 1.25rem; text-align: center;">
+                            <span style="color: var(--success); font-weight: 600; display: block; margin-bottom: 0.25rem;">Patient Created Successfully!</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Provide this unique UHID to the patient:</span>
+                            <div class="uhid-badge" style="margin: 0.75rem auto 0; max-width: 220px;" id="doc-pat-success-uhid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-container hidden" id="doctor-patient-history">
+                    <h3>Patient History</h3>
+                    <div class="timeline" id="doctor-timeline">
+                        <!-- populated by js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-dashboard-hospital" class="view hidden dashboard-container">
+            <div class="dashboard-header">
+                <h2><span class="gradient-text user-name">Hospital</span> Dashboard</h2>
+            </div>
+            <div class="grid-2">
+                <div class="glass-container">
+                    <h3>Add New Doctor</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Register a new doctor under your hospital organization.</p>
+                    <form onsubmit="app.hospitalAddDoctor(event)">
+                        <div class="input-group">
+                            <label>Doctor Login Username</label>
+                            <input type="text" id="hosp-doc-username" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Password</label>
+                            <input type="password" id="hosp-doc-password" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Doctor Full Name</label>
+                            <input type="text" id="hosp-doc-name" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Specialization</label>
+                            <input type="text" id="hosp-doc-specialization" required>
+                        </div>
+                        <div class="error-msg" id="hosp-doc-error"></div>
+                        <button type="submit" class="btn btn-primary w-100">Register Doctor</button>
+                    </form>
+                </div>
+                
+                <div class="glass-container">
+                    <h3>Registered Doctors</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Doctors associated with your hospital clinic branch.</p>
+                    <div class="timeline" id="hospital-doctors-list">
+                        <!-- populated by js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="/js/app.js?v=3.0"></script>
+</body>
+</html>
